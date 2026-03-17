@@ -1,5 +1,92 @@
 // Variable de estado global
 let esRenacimiento = false;
+const API_URL = "TU_URL_AQUI";
+
+async function cargarMensajes() {
+    const contenedorMensajes = document.getElementById('contenedor-mensajes-modal');
+    if (!contenedorMensajes) return;
+
+    contenedorMensajes.innerHTML = '<p class="loading-text">Consultando el más allá...</p>';
+
+    try {
+        const respuesta = await fetch(API_URL);
+        const datos = await respuesta.json();
+        
+        contenedorMensajes.innerHTML = '';
+        
+        // Los mostramos al revés para que el último deseo aparezca arriba
+        datos.reverse().forEach(m => {
+            const div = document.createElement('div');
+            div.className = 'mensaje-card';
+            div.innerHTML = `<strong>${m.nombre}</strong><p>"${m.mensaje}"</p>`;
+            contenedorMensajes.appendChild(div);
+        });
+    } catch (error) {
+        console.error("Error cargando mensajes:", error);
+        contenedorMensajes.innerHTML = '<p>No se pudo contactar con los espíritus.</p>';
+    }
+}
+
+// Lógica del Formulario para ENVIAR al Excel
+document.addEventListener('DOMContentLoaded', () => {
+    const formDeseos = document.getElementById('form-deseos');
+    
+    if (formDeseos) {
+        formDeseos.addEventListener('submit', async (e) => {
+            e.preventDefault();
+            const btn = e.target.querySelector('button');
+            const originalText = btn.innerText;
+
+            // Feedback visual
+            btn.innerText = "Grabando en piedra...";
+            btn.disabled = true;
+
+            const nombre = document.getElementById('nombre').value;
+            const mensaje = document.getElementById('mensaje').value;
+
+            try {
+                const response = await fetch(API_URL, {
+                    method: 'POST',
+                    headers: {
+                        'Accept': 'application/json',
+                        'Content-Type': 'application/json'
+                    },
+                    body: JSON.stringify({
+                        data: [
+                            {
+                                'nombre': nombre,
+                                'mensaje': mensaje
+                            }
+                        ]
+                    })
+                });
+
+                if (response.ok) {
+                    alert("Tu mensaje ha cruzado al otro lado.");
+                    e.target.reset();
+                    // Opcional: recargar mensajes si el modal está abierto
+                    if (document.getElementById('modal-libro').style.display === "block") {
+                        cargarMensajes();
+                    }
+                }
+            } catch (error) {
+                alert("Hubo una interferencia espiritual. Inténtalo de nuevo.");
+            } finally {
+                btn.innerText = originalText;
+                btn.disabled = false;
+            }
+        });
+    }
+
+    // Botón para abrir el libro
+    const btnAbrirLibro = document.getElementById('btn-abrir-libro');
+    if (btnAbrirLibro) {
+        btnAbrirLibro.addEventListener('click', () => {
+            document.getElementById('modal-libro').style.display = "block";
+            cargarMensajes();
+        });
+    }
+});
 
 // --- INICIALIZACIÓN ---
 document.addEventListener('DOMContentLoaded', () => {
