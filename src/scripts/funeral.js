@@ -39,7 +39,7 @@ document.addEventListener('DOMContentLoaded', () => {
     
     // 1. COUNTDOWN (Corregido a 20 de Marzo)
     const countdown = document.getElementById("countdown");
-    const targetDate = new Date("March 10, 2026 00:00:00").getTime();
+    const targetDate = new Date("March 20, 2026 00:00:00").getTime();
 
     const timer = setInterval(() => {
         const now = new Date().getTime();
@@ -174,10 +174,16 @@ function transformarPagina() {
 
     // Carta
     document.querySelector('.carta-section h2').innerText = "El Manifiesto de los 30";
+    const h3 = document.querySelector('.h3-carta')
     const p1 = document.querySelector('.p-carta1');
     const p2 = document.querySelector('.p-carta2');
+    const firma = document.querySelector('.firma')
     if(p1) p1.innerText = "Hoy, 20 de marzo oficialmente damos la bienvenida a los 30.";
     if(p2) p2.innerText = "Atrás quedan los experimentos de los 20s. Hoy inauguramos una era donde la intensidad se convierte en poder.";
+    if(h3) h3.innerText = "Renacimiento de los 30";
+    if(firma) firma.innerText = ""
+
+    
 
     // Acta
     document.querySelector('.acta h2').innerText = "Certificado de Renacimiento";
