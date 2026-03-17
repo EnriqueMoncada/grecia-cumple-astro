@@ -1,0 +1,167 @@
+---
+import '../styles/global.css'; 
+---
+
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>El Velorio Oficial de Sus 29</title>
+  <link href="https://fonts.googleapis.com/css2?family=Cinzel:wght@400;700&family=Playfair+Display:wght@400;700&display=swap" rel="stylesheet">
+</head>
+<body>
+
+<div class="ash-container"></div>
+
+<section class="hero">
+  <h1>El Velorio Oficial de Sus 29</h1>
+  <p class="sub">Con profundo dolor anunciamos su partida.</p>
+  <div class="date">20 de Marzo — Renacimiento</div>
+</section>
+
+<section class="carta-section">
+    <h2>La Última Carta</h2>
+    <div class="sobre" id="sobre">
+      <div class="tapa"></div>
+      <div class="contenido-carta">
+        <img src="/images/grecia.jpeg" alt="La Difunta" class="foto-carta">
+        <div class="texto-carta">
+          <h3>Muerte Oficial a los 29</h3>
+          <p>Hoy, 19 de marzo, a las 11:59 PM, despedimos oficialmente a sus 29.</p>
+          <p>Fueron años de intensidad, decisiones cuestionables y carcajadas inolvidables.</p>
+          <p>Lo que viene ahora no es el final… es la evolución.</p>
+          <p class="firma">— Desde el más allá</p>
+        </div>
+      </div>
+    </div>
+</section>
+
+<section class="acta">
+  <h2>Acta de Defunción</h2>
+  <div class="card">
+    <p><strong>Nombre:</strong> Sus Gloriosos 29</p>
+    <p><strong>Fecha de Nacimiento:</strong> Hace una década intensa</p>
+    <p><strong>Fecha de Defunción:</strong> 19 de marzo — 11:59 PM</p>
+    <p><strong>Causa:</strong> Exceso de intensidad y malas decisiones financieras</p>
+  </div>
+</section>
+
+<section class="galeria-section">
+  <h2>Crónicas Visuales de una Década</h2>
+  <div class="galeria-grid">
+    <div class="exceso-card">
+      <img src="/images/tu-foto1.jpg" alt="Exceso">
+      <p>El primer gran error financiero (2018)</p>
+    </div>
+    <div class="exceso-card">
+      <img src="/images/tu-foto2.jpg" alt="Exceso">
+      <p>Aquel viaje sin ahorros (2020)</p>
+    </div>
+    <div class="exceso-card">
+      <img src="/images/tu-foto3.jpg" alt="Exceso">
+      <p>Cena imprudente de medianoche</p>
+    </div>
+  </div>
+</section>
+
+<div id="modal" class="modal">
+  <div class="modal-content">
+    <img id="modal-img" src="">
+    <h3 id="modal-text"></h3>
+  </div>
+</div>
+
+<section class="countdown-section">
+  <h2>Cuenta Regresiva Final</h2>
+  <div id="countdown"></div>
+</section>
+
+<section class="testamento">
+  <h2>Testamento Oficial</h2>
+  <div class="grid">
+    <div class="box">
+      <h3>🪦 Deja en este mundo</h3>
+      <ul>
+        <li>Relaciones tóxicas</li>
+        <li>Jeans del 2015</li>
+        <li>Miedo al qué dirán</li>
+        <li>Resacas de 2 días</li>
+      </ul>
+    </div>
+    <div class="box">
+      <h3>👑 Hereda a los 30</h3>
+      <ul>
+        <li>Amor propio</li>
+        <li>Vino bueno</li>
+        <li>Paz mental</li>
+        <li>Dormir temprano</li>
+      </ul>
+    </div>
+  </div>
+</section>
+
+<section class="olvido-section">
+  <h2>El Rincón del Olvido</h2>
+  <p>Haz clic para enterrar estos recuerdos:</p>
+  <ul id="lista-olvido" class="lista-pecados">
+    <li>La inseguridad de los 20s</li>
+    <li>Ese mensaje que enviaste borracho</li>
+    <li>Las metas que no eran tuyas</li>
+    <li>El miedo a decir "no"</li>
+  </ul>
+</section>
+
+<section class="oraculo">
+  <h2 id="trigger-oraculo">Sentencia del Oráculo</h2>
+  <blockquote id="sentencia">"Lo que no te mata, te hace más cínico."</blockquote>
+</section>
+
+<section class="vela-section">
+  <h2>La Llama de la Esperanza</h2>
+  <div class="vela" id="vela">🕯️</div>
+  <p id="estado">Haz clic para mantener viva la memoria</p>
+</section>
+
+
+
+<section id="renacimiento" style="display: none;">
+  <div class="card-renacimiento">
+    <h2>✨ El Renacimiento de los 30 ✨</h2>
+    <h3>¡La metamorfosis se ha completado!</h3>
+    <p>Los 29 han muerto para dar paso a una versión más sabia y con menos paciencia.</p>
+    <div class="iconos-final">🥂🎂👑</div>
+  </div>
+</section>
+
+<section class="deseos-section">
+  <h2>Deja tu marca</h2>
+  <form id="form-deseos" class="form-deseos">
+    <input type="text" id="nombre" placeholder="Nombre" required />
+    <textarea id="mensaje" placeholder="Tu mensaje..." required></textarea>
+    <button type="submit">Enviar al más allá</button>
+  </form>
+  
+  <div style="text-align: center; margin-top: 20px;">
+    <button id="btn-abrir-libro" class="btn-secundario">Ver Libro de Recuerdos</button>
+  </div>
+
+  <div id="modal-libro" class="modal-libro" style="display: none;">
+    <div class="modal-libro-content">
+      <span class="cerrar-libro">&times;</span>
+      <h2>Libro de Condolencias</h2>
+      <div id="contenedor-mensajes-modal">
+         <p>Cargando mensajes...</p>
+      </div>
+    </div>
+  </div>
+</section>
+
+<footer>
+  <p>Riguroso Luto (pero con estilo)</p>
+</footer>
+
+<script src="../scripts/funeral.js"></script>
+
+</body>
+</html>
