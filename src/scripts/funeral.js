@@ -1,7 +1,8 @@
 // Variable de estado global
 let esRenacimiento = false;
-const API_URL = "TU_URL_AQUI";
+const API_URL = "https://sheetdb.io/api/v1/r2bcpxn347u3t"; // <--- CAMBIA ESTO
 
+// --- FUNCIÓN CARGAR MENSAJES ---
 async function cargarMensajes() {
     const contenedorMensajes = document.getElementById('contenedor-mensajes-modal');
     if (!contenedorMensajes) return;
@@ -14,7 +15,11 @@ async function cargarMensajes() {
         
         contenedorMensajes.innerHTML = '';
         
-        // Los mostramos al revés para que el último deseo aparezca arriba
+        if (datos.length === 0) {
+            contenedorMensajes.innerHTML = '<p>El libro está vacío... por ahora.</p>';
+            return;
+        }
+
         datos.reverse().forEach(m => {
             const div = document.createElement('div');
             div.className = 'mensaje-card';
@@ -26,67 +31,6 @@ async function cargarMensajes() {
         contenedorMensajes.innerHTML = '<p>No se pudo contactar con los espíritus.</p>';
     }
 }
-
-// Lógica del Formulario para ENVIAR al Excel
-document.addEventListener('DOMContentLoaded', () => {
-    const formDeseos = document.getElementById('form-deseos');
-    
-    if (formDeseos) {
-        formDeseos.addEventListener('submit', async (e) => {
-            e.preventDefault();
-            const btn = e.target.querySelector('button');
-            const originalText = btn.innerText;
-
-            // Feedback visual
-            btn.innerText = "Grabando en piedra...";
-            btn.disabled = true;
-
-            const nombre = document.getElementById('nombre').value;
-            const mensaje = document.getElementById('mensaje').value;
-
-            try {
-                const response = await fetch(API_URL, {
-                    method: 'POST',
-                    headers: {
-                        'Accept': 'application/json',
-                        'Content-Type': 'application/json'
-                    },
-                    body: JSON.stringify({
-                        data: [
-                            {
-                                'nombre': nombre,
-                                'mensaje': mensaje
-                            }
-                        ]
-                    })
-                });
-
-                if (response.ok) {
-                    alert("Tu mensaje ha cruzado al otro lado.");
-                    e.target.reset();
-                    // Opcional: recargar mensajes si el modal está abierto
-                    if (document.getElementById('modal-libro').style.display === "block") {
-                        cargarMensajes();
-                    }
-                }
-            } catch (error) {
-                alert("Hubo una interferencia espiritual. Inténtalo de nuevo.");
-            } finally {
-                btn.innerText = originalText;
-                btn.disabled = false;
-            }
-        });
-    }
-
-    // Botón para abrir el libro
-    const btnAbrirLibro = document.getElementById('btn-abrir-libro');
-    if (btnAbrirLibro) {
-        btnAbrirLibro.addEventListener('click', () => {
-            document.getElementById('modal-libro').style.display = "block";
-            cargarMensajes();
-        });
-    }
-});
 
 // --- INICIALIZACIÓN ---
 document.addEventListener('DOMContentLoaded', () => {
@@ -111,59 +55,64 @@ document.addEventListener('DOMContentLoaded', () => {
         }
     }, 1000);
 
-    // 2. MODAL DE RECUERDOS (EL LIBRO)
+    // 2. MODAL Y FORMULARIO (LIBRO DE RECUERDOS)
     const modalLibro = document.getElementById('modal-libro');
-    const btnAbrir = document.getElementById('btn-abrir-libro');
-    const btnCerrar = document.querySelector('.cerrar-libro');
-    const contenedorMensajes = document.getElementById('contenedor-mensajes-modal');
+    const btnAbrirLibro = document.getElementById('btn-abrir-libro');
+    const btnCerrarLibro = document.querySelector('.cerrar-libro');
     const formDeseos = document.getElementById('form-deseos');
 
-    let mensajesBD = [
-        { nombre: "El Destino", mensaje: "Los 30 te esperan con los brazos abiertos y una rodilla adolorida." },
-        { nombre: "Anónimo", mensaje: "Descansen en paz las malas decisiones de los viernes." }
-    ];
-
-    function renderizarMensajes() {
-        if (!contenedorMensajes) return;
-        contenedorMensajes.innerHTML = '';
-        mensajesBD.forEach(m => {
-            const div = document.createElement('div');
-            div.className = 'mensaje-card';
-            div.innerHTML = `<strong>${m.nombre}</strong><p>"${m.mensaje}"</p>`;
-            contenedorMensajes.appendChild(div);
-        });
-    }
-
-    // FIX: Validación para evitar el error "Cannot read properties of null (reading 'style')"
-    if (btnAbrir && modalLibro) {
-        btnAbrir.addEventListener('click', () => {
-            renderizarMensajes();
+    // Abrir libro
+    if (btnAbrirLibro && modalLibro) {
+        btnAbrirLibro.addEventListener('click', () => {
             modalLibro.style.display = "block";
+            cargarMensajes();
         });
     }
 
-    if (btnCerrar && modalLibro) {
-        btnCerrar.addEventListener('click', () => {
+    // Cerrar libro
+    if (btnCerrarLibro && modalLibro) {
+        btnCerrarLibro.addEventListener('click', () => {
             modalLibro.style.display = "none";
         });
     }
 
-    // 3. FORMULARIO DE DESEOS
+    // Enviar deseo al Excel
     if (formDeseos) {
-        formDeseos.addEventListener('submit', (e) => {
+        formDeseos.addEventListener('submit', async (e) => {
             e.preventDefault();
-            const nombreInput = document.getElementById('nombre');
-            const mensajeInput = document.getElementById('mensaje');
-            
-            if (nombreInput && mensajeInput) {
-                mensajesBD.unshift({ nombre: nombreInput.value, mensaje: mensajeInput.value });
-                alert("Tu deseo ha sido guardado en el libro de los muertos.");
-                e.target.reset();
+            const btn = e.target.querySelector('button');
+            const originalText = btn.innerText;
+
+            btn.innerText = "Grabando en piedra...";
+            btn.disabled = true;
+
+            const nombre = document.getElementById('nombre').value;
+            const mensaje = document.getElementById('mensaje').value;
+
+            try {
+                const response = await fetch(API_URL, {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({ data: [{ nombre, mensaje }] })
+                });
+
+                if (response.ok) {
+                    alert("Tu mensaje ha cruzado al otro lado.");
+                    e.target.reset();
+                    if (modalLibro && modalLibro.style.display === "block") {
+                        cargarMensajes();
+                    }
+                }
+            } catch (error) {
+                alert("Interferencia espiritual. Intenta de nuevo.");
+            } finally {
+                btn.innerText = originalText;
+                btn.disabled = false;
             }
         });
     }
 
-    // 4. VELA
+    // 3. VELA
     const vela = document.getElementById('vela');
     const estadoVela = document.getElementById('estado');
     if (vela && estadoVela) {
@@ -173,7 +122,7 @@ document.addEventListener('DOMContentLoaded', () => {
         });
     }
 
-    // 5. ORÁCULO
+    // 4. ORÁCULO
     const triggerOraculo = document.getElementById('trigger-oraculo');
     const sentenciaText = document.getElementById('sentencia');
     if (triggerOraculo && sentenciaText) {
@@ -183,35 +132,41 @@ document.addEventListener('DOMContentLoaded', () => {
         });
     }
 
-    // 6. SOBRE
+    // 5. SOBRE
     const sobre = document.getElementById("sobre");
     if (sobre) {
         sobre.addEventListener("click", () => sobre.classList.toggle("abierto"));
     }
 
+    // 6. RINCÓN DEL OLVIDO (Efecto de eliminar)
+    const listaOlvido = document.getElementById('lista-olvido');
+    if (listaOlvido) {
+        listaOlvido.addEventListener('click', (e) => {
+            if (e.target.tagName === 'LI') {
+                e.target.style.transition = "all 0.5s";
+                e.target.style.opacity = "0";
+                e.target.style.transform = "translateX(50px)";
+                setTimeout(() => e.target.remove(), 500);
+            }
+        });
+    }
+
     // 7. CERRAR MODALES AL CLICAR FUERA
     window.addEventListener('click', (event) => {
-        if (modalLibro && event.target == modalLibro) {
-            modalLibro.style.display = "none";
-        }
+        if (modalLibro && event.target == modalLibro) modalLibro.style.display = "none";
         const modalGaleria = document.getElementById('modal');
-        if (modalGaleria && event.target == modalGaleria) {
-            modalGaleria.style.display = "none";
-        }
+        if (modalGaleria && event.target == modalGaleria) modalGaleria.style.display = "none";
     });
 });
 
-// Función de transformación (Asegúrate de tener las clases CSS correspondientes)
+// 8. TRANSFORMACIÓN
 function transformarPagina() {
     if (esRenacimiento) return;
     esRenacimiento = true;
-    
     document.body.classList.add('renacido', 'animar-renacimiento');
-    
     const heroH1 = document.querySelector('.hero h1');
     const heroSub = document.querySelector('.hero .sub');
     const renacimientoSec = document.getElementById('renacimiento');
-    
     if (heroH1) heroH1.innerText = "✨ ¡Bienvenidos a los 30! ✨";
     if (heroSub) heroSub.innerText = "La metamorfosis ha sido un éxito.";
     if (renacimientoSec) {
@@ -220,18 +175,16 @@ function transformarPagina() {
     }
 }
 
-// 8. CENIZAS
+// 9. CENIZAS
 const ashContainer = document.querySelector(".ash-container");
 function createAsh() {
     if (!ashContainer) return;
     const ash = document.createElement("div");
     ash.classList.add("ash");
     if (esRenacimiento) ash.classList.add('party-mode');
-    
     ash.style.left = Math.random() * 100 + "vw";
     ash.style.animationDuration = (3 + Math.random() * 5) + "s";
     ash.style.width = ash.style.height = (Math.random() * 5 + 2) + "px";
-    
     ashContainer.appendChild(ash);
     setTimeout(() => ash.remove(), 8000);
 }
