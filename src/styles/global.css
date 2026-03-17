@@ -277,6 +277,7 @@ body.renacido footer {
     animation: flash-renacimiento 2s ease-out;
 }
 
+
 /* Ocultar la cuenta regresiva con suavidad */
 .countdown-section {
     transition: opacity 1.5s ease, transform 1.5s ease, margin 2s ease;
@@ -409,4 +410,13 @@ body.renacido footer {
   display: block;
   margin-bottom: 5px;
 }
+
+@media (max-width: 600px) {
+  .carta-section {
+  
+  margin-bottom: 100px;
+}
+}
+
+
 
