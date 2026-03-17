@@ -1,6 +1,6 @@
 // Variable de estado global
 let esRenacimiento = false;
-const API_URL = "https://sheetdb.io/api/v1/r2bcpxn347u3t"; // <--- CAMBIA ESTO
+const API_URL = "https://sheetdb.io/api/v1/r2bcpxn347u3t";
 
 // --- FUNCIÓN CARGAR MENSAJES ---
 async function cargarMensajes() {
@@ -13,6 +13,8 @@ async function cargarMensajes() {
         const respuesta = await fetch(API_URL);
         const datos = await respuesta.json();
         
+        console.log("Datos recibidos de SheetDB:", datos); // Esto te dirá qué nombres de columna lee el sistema
+
         contenedorMensajes.innerHTML = '';
         
         if (!datos || datos.length === 0) {
@@ -20,14 +22,13 @@ async function cargarMensajes() {
             return;
         }
 
-        // reverse para ver los más nuevos primero
         datos.reverse().forEach(m => {
             const div = document.createElement('div');
             div.className = 'mensaje-card';
             
-            // Usamos || para capturar el dato aunque la columna se llame 'Mensaje' con Mayúscula
-            const nombreVal = m.nombre || m.Nombre || "Anónimo";
-            const mensajeVal = m.mensaje || m.Mensaje || "Envió un suspiro silencioso...";
+            // Si esto falla es porque el Excel tiene nombres distintos a 'nombre' y 'mensaje'
+            const nombreVal = m.nombre || "Anónimo";
+            const mensajeVal = m.mensaje || "Dejó un mensaje silencioso...";
 
             div.innerHTML = `<strong>${nombreVal}</strong><p>"${mensajeVal}"</p>`;
             contenedorMensajes.appendChild(div);
@@ -61,13 +62,12 @@ document.addEventListener('DOMContentLoaded', () => {
         }
     }, 1000);
 
-    // 2. MODAL Y FORMULARIO (LIBRO DE RECUERDOS)
+    // 2. MODAL Y FORMULARIO
     const modalLibro = document.getElementById('modal-libro');
     const btnAbrirLibro = document.getElementById('btn-abrir-libro');
     const btnCerrarLibro = document.querySelector('.cerrar-libro');
     const formDeseos = document.getElementById('form-deseos');
 
-    // Abrir libro
     if (btnAbrirLibro && modalLibro) {
         btnAbrirLibro.addEventListener('click', () => {
             modalLibro.style.display = "block";
@@ -75,42 +75,46 @@ document.addEventListener('DOMContentLoaded', () => {
         });
     }
 
-    // Cerrar libro
     if (btnCerrarLibro && modalLibro) {
         btnCerrarLibro.addEventListener('click', () => {
             modalLibro.style.display = "none";
         });
     }
 
-    // Enviar deseo al Excel
+    // ENVÍO DE DATOS
     if (formDeseos) {
         formDeseos.addEventListener('submit', async (e) => {
             e.preventDefault();
             const btn = e.target.querySelector('button');
             const originalText = btn.innerText;
 
-            btn.innerText = "Grabando en piedra...";
+            btn.innerText = "Grabando...";
             btn.disabled = true;
 
-            const nombre = document.getElementById('nombre').value;
-            const mensaje = document.getElementById('mensaje').value;
+            // IMPORTANTE: Los nombres aquí deben ser IGUALES a los del Excel (A1 y B1)
+            const payload = {
+                data: [
+                    { 
+                        "nombre": document.getElementById('nombre').value, 
+                        "mensaje": document.getElementById('mensaje').value 
+                    }
+                ]
+            };
 
             try {
                 const response = await fetch(API_URL, {
                     method: 'POST',
                     headers: { 'Content-Type': 'application/json' },
-                    body: JSON.stringify({ data: [{ nombre, mensaje }] })
+                    body: JSON.stringify(payload)
                 });
 
                 if (response.ok) {
-                    alert("Tu mensaje ha cruzado al otro lado.");
+                    alert("Tu mensaje ha sido guardado.");
                     e.target.reset();
-                    if (modalLibro && modalLibro.style.display === "block") {
-                        cargarMensajes();
-                    }
+                    cargarMensajes();
                 }
             } catch (error) {
-                alert("Interferencia espiritual. Intenta de nuevo.");
+                alert("Error al enviar.");
             } finally {
                 btn.innerText = originalText;
                 btn.disabled = false;
@@ -132,7 +136,7 @@ document.addEventListener('DOMContentLoaded', () => {
     const triggerOraculo = document.getElementById('trigger-oraculo');
     const sentenciaText = document.getElementById('sentencia');
     if (triggerOraculo && sentenciaText) {
-        const frases = ["Los 30 son el nuevo 'ya me duele la espalda'.", "La madurez es solo una trampa.", "Ya no se celebra, se sobrevive.", "Bienvenida la paz mental.", "Menos fiesta, más siesta."];
+        const frases = ["Los 30 son el nuevo 'ya me duele la espalda'.", "La madurez es solo una trampa.", "Ya no se celebra, se sobrevive.", "Bienvenida la paz mental."];
         triggerOraculo.addEventListener('click', () => {
             sentenciaText.innerText = `"${frases[Math.floor(Math.random() * frases.length)]}"`;
         });
@@ -144,53 +148,36 @@ document.addEventListener('DOMContentLoaded', () => {
         sobre.addEventListener("click", () => sobre.classList.toggle("abierto"));
     }
 
-    // 6. RINCÓN DEL OLVIDO (Efecto de eliminar)
+    // 6. RINCÓN DEL OLVIDO
     const listaOlvido = document.getElementById('lista-olvido');
     if (listaOlvido) {
         listaOlvido.addEventListener('click', (e) => {
             if (e.target.tagName === 'LI') {
-                e.target.style.transition = "all 0.5s";
                 e.target.style.opacity = "0";
-                e.target.style.transform = "translateX(50px)";
                 setTimeout(() => e.target.remove(), 500);
             }
         });
     }
 
-    // 7. CERRAR MODALES AL CLICAR FUERA
+    // 7. CERRAR AL CLICAR FUERA
     window.addEventListener('click', (event) => {
         if (modalLibro && event.target == modalLibro) modalLibro.style.display = "none";
-        const modalGaleria = document.getElementById('modal');
-        if (modalGaleria && event.target == modalGaleria) modalGaleria.style.display = "none";
     });
 });
 
-// 8. TRANSFORMACIÓN
+// 8. TRANSFORMACIÓN Y CENIZAS
 function transformarPagina() {
     if (esRenacimiento) return;
     esRenacimiento = true;
-    document.body.classList.add('renacido', 'animar-renacimiento');
-    const heroH1 = document.querySelector('.hero h1');
-    const heroSub = document.querySelector('.hero .sub');
-    const renacimientoSec = document.getElementById('renacimiento');
-    if (heroH1) heroH1.innerText = "✨ ¡Bienvenidos a los 30! ✨";
-    if (heroSub) heroSub.innerText = "La metamorfosis ha sido un éxito.";
-    if (renacimientoSec) {
-        renacimientoSec.style.display = "block";
-        setTimeout(() => { renacimientoSec.style.opacity = "1"; }, 50);
-    }
+    document.body.classList.add('renacido');
 }
 
-// 9. CENIZAS
 const ashContainer = document.querySelector(".ash-container");
 function createAsh() {
     if (!ashContainer) return;
     const ash = document.createElement("div");
     ash.classList.add("ash");
-    if (esRenacimiento) ash.classList.add('party-mode');
     ash.style.left = Math.random() * 100 + "vw";
-    ash.style.animationDuration = (3 + Math.random() * 5) + "s";
-    ash.style.width = ash.style.height = (Math.random() * 5 + 2) + "px";
     ashContainer.appendChild(ash);
     setTimeout(() => ash.remove(), 8000);
 }
