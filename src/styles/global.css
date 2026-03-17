@@ -24,10 +24,17 @@ h1, h2, h3, .card, .box, .exceso-card, .foto-carta, img, footer {
     transition: all 2.5s cubic-bezier(0.4, 0, 0.2, 1);
 }
 
-h1, h2, h3 {
+h2, h3 {
   font-family: "Cinzel", serif;
   letter-spacing: 3px;
   text-transform: uppercase;
+  text-align: center;
+  margin-bottom: 20px;
+}
+
+h1 {
+  font-family: "Cinzel", serif;
+  letter-spacing: 3px;
   text-align: center;
   margin-bottom: 20px;
 }
@@ -145,22 +152,25 @@ section {
 /* --- CENIZAS --- */
 .ash {
   position: absolute;
-  /* Color base: Gris carbón muy oscuro */
-  background: #2a2a2a; 
-  opacity: 0.6; /* Un poco menos transparente para que se note la textura */
-  border-radius: 50%;
+  opacity: 0.8;
+  user-select: none; /* Para que no se seleccionen al hacer clic */
+  pointer-events: none; /* Para que no estorben al hacer clic en otras cosas */
   animation: fall linear infinite;
-
-  /* --- La Magia: Textura y Brillo --- */
-  /* Usamos un degradado radial para crear un núcleo oscuro y un borde irregular gris claro */
-  background-image: radial-gradient(circle at 30% 30%, #a0a0a0 0%, #2a2a2a 70%);
-  
-  /* Un borde muy suave y difuminado para que no parezca un círculo perfecto */
-  box-shadow: 0 0 3px 1px rgba(180, 180, 180, 0.4); 
-  
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 20px; /* Tamaño de la vela */
 }
-.ash.party-mode { background: gold !important; width: 5px; height: 5px; }
-@keyframes fall { to { transform: translateY(100vh) rotate(360deg); } }
+
+/* Si es modo fiesta, podemos hacer que brillen o cambien de tamaño */
+.ash.party-mode { 
+  filter: drop-shadow(0 0 5px gold);
+  font-size: 25px;
+}
+
+@keyframes fall { 
+  to { transform: translateY(100vh) rotate(360deg); } 
+}
 
 /* --- FOOTER --- */
 footer { padding: 60px; background: #000; border-top: 1px solid rgba(212,175,55,0.1); opacity: 0.7; }
@@ -399,3 +409,4 @@ body.renacido footer {
   display: block;
   margin-bottom: 5px;
 }
+
