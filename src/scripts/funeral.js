@@ -15,15 +15,21 @@ async function cargarMensajes() {
         
         contenedorMensajes.innerHTML = '';
         
-        if (datos.length === 0) {
+        if (!datos || datos.length === 0) {
             contenedorMensajes.innerHTML = '<p>El libro está vacío... por ahora.</p>';
             return;
         }
 
+        // reverse para ver los más nuevos primero
         datos.reverse().forEach(m => {
             const div = document.createElement('div');
             div.className = 'mensaje-card';
-            div.innerHTML = `<strong>${m.nombre}</strong><p>"${m.mensaje}"</p>`;
+            
+            // Usamos || para capturar el dato aunque la columna se llame 'Mensaje' con Mayúscula
+            const nombreVal = m.nombre || m.Nombre || "Anónimo";
+            const mensajeVal = m.mensaje || m.Mensaje || "Envió un suspiro silencioso...";
+
+            div.innerHTML = `<strong>${nombreVal}</strong><p>"${mensajeVal}"</p>`;
             contenedorMensajes.appendChild(div);
         });
     } catch (error) {
